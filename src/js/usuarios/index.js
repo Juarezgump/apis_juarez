@@ -4,11 +4,8 @@ import {validarFormulario} from '../funciones';
 
 
 const formUsuarios = document.getElementById('formUsuarios');
-
 const BtnGuardar = document.getElementById('BtnGuardar');
 const BtnModificar = document.getElementById('BtnModificar');
-
-
 const InputUsuarioTelefono = document.getElementById('usuario_telefono');
 const usuario_nit = document.getElementById('usuario_nit');
 
