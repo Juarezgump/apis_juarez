@@ -1,77 +1,74 @@
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-10 mx-auto">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="text-center mb-2">Bienvenido a la aplicación para el registro, modificación y eliminación de usuario</h5>
-                    <h4 class="text-center mb-2 text-warning bg-dark">Registro de Usuarios</h4>
+<div class="row justify-content-center p-3">
+    <div class="col-lg-10">
+        <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
+            <div class="card-body p-3">
+                <div class="row mb-3">
+                    <h5 class="text-center mb-2">¡Bienvenido a la Aplicación para el registro, modificación y eliminación de usuario!</h5>
+                    <h4 class="text-center mb-2 text-primary">MANIPULACION DE USUARIOS</h4>
                 </div>
-                <div class="card-body">
-                    <form id="formUsuarios" method="post" action="procesar_usuario.php">
-                        <!-- Campo oculto para ID en caso de edición -->
+
+                <div class="row justify-content-center p-5 shadow-lg">
+
+                    <form id="FormUsuarios">
                         <input type="hidden" id="usuario_id" name="usuario_id">
-                        
-                        <!-- Nombre y Apellido en la misma fila -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="usuario_nombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="usuario_nombre" name="usuario_nombre" maxlength="100" required>
+
+                        <div class="row mb-3 justify-content-center">
+                            <div class="col-lg-6">
+                                <label for="usuario_nombres" class="form-label">INGRESE SUS NOMRES</label>
+                                <input type="text" class="form-control" id="usuario_nombres" name="usuario_nombres" placeholder="ingrese aca sus nombres">
                             </div>
-                            <div class="col-md-6">
-                                <label for="usuario_apellido" class="form-label">Apellido</label>
-                                <input type="text" class="form-control" id="usuario_apellido" name="usuario_apellido" maxlength="100" required>
-                            </div>
-                        </div>
-                        
-                        <!-- NIT y Teléfono en la misma fila -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="usuario_nit" class="form-label">NIT</label>
-                                <input type="text" class="form-control" id="usuario_nit" name="usuario_nit">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="usuario_telefono" class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" id="usuario_telefono" name="usuario_telefono">
+                            <div class="col-lg-6">
+                                <label for="usuario_apellidos" class="form-label">INGRESE SUS APELLIDOS</label>
+                                <input type="text" class="form-control" id="usuario_apellidos" name="usuario_apellidos" placeholder="Ingrese aca sus apellidos">
                             </div>
                         </div>
-                        
-                        <!-- Correo en fila completa -->
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label for="usuario_correo" class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" id="usuario_correo" name="usuario_correo" maxlength="100" required>
+
+                        <div class="row mb-3 justify-content-center">
+                            <div class="col-lg-6">
+                                <label for="usuario_nit" class="form-label">INGRESE SU NIT</label>
+                                <input type="number" class="form-control" id="usuario_nit" name="usuario_nit" placeholder="Ingrese aca su nit">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="usuario_telefono" class="form-label">INGRESE SU TELEFONO</label>
+                                <input type="number" class="form-control" id="usuario_telefono" name="usuario_telefono" placeholder="Ingrese aca su numero de telefono sin el +502">
                             </div>
                         </div>
-                        
-                        <!-- Estado y Situación en la misma fila -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="usuario_estado" class="form-label">Estado</label>
-                                <select class="form-select" id="usuario_estado" name="usuario_estado" required>
-                                    <option value="A">Activo</option>
-                                    <option value="I">Inactivo</option>
+
+
+
+                        <div class="row mb-3 justify-content-center mb-3">
+                            <div class="col-lg-6">
+                                <label for="usuario_correo" class="form-label">INGRESE SU CORREO ELECTRONICO</label>
+                                <input type="email" class="form-control" id="usuario_correo" name="usuario_correo" placeholder="Ingrese aca su correo ejemplo@ejemplo.com">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="usuario_estado" class="form-label">ESCOJA EL ESTADO DEL USUARIO</label>
+                                <select name="usuario_estado" class="form-select" id="usuario_estado">
+                                    <option value="" class="text-center"> -- SELECCION EL ESTADO -- </option>
+                                    <option value="P">PRESENTE</option>
+                                    <option value="F">FALTANDO</option>
+                                    <option value="C">COMISION</option>
                                 </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="usuario_situacion" class="form-label">Situación</label>
-                                <select class="form-select" id="usuario_situacion" name="usuario_situacion">
-                                    <option value="1">Normal</option>
-                                    <option value="0">Especial</option>
-                                </select>
+
                             </div>
                         </div>
-                        
-                        <!-- Botones centrados y más grandes -->
-                        <div class="row mt-5">
-                            <div class="col-12 d-flex justify-content-center gap-4">
-                                <button type="reset" class="btn btn-secondary btn-lg px-5 py-3 fs-5" id="BtnLimpiar">
-                                    <i class="bi bi-x-circle me-2"></i>Limpiar
+
+                        <div class="row justify-content-center mt-5">
+                            <div class="col-auto">
+                                <button class="btn btn-success" type="submit" id="BtnGuardar">
+                                    Guardar
                                 </button>
-                                <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fs-5" id="BtnGuardar">
-                                    <i class="bi bi-save me-2"></i>Guardar
+                            </div>
+
+                            <div class="col-auto ">
+                                <button class="btn btn-warning d-none" type="button" id="BtnModificar">
+                                    Modificar
                                 </button>
-                                <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fs-5 d-none" id="BtnModificar">
-                                    <i class="bi bi-pencil-square me-2"></i>Modificar
+                            </div>
+
+                            <div class="col-auto">
+                                <button class="btn btn-secondary" type="reset" id="BtnLimpiar">
+                                    Limpiar
                                 </button>
                             </div>
                         </div>
@@ -82,4 +79,20 @@
     </div>
 </div>
 
+<div class="row justify-content-center p-3">
+    <div class="col-lg-10">
+        <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
+            <div class="card-body p-3">
+                <h3 class="text-center">USUARIOS REGISTRADOS EN LA BASE DE DATOS</h3>
+
+                <div class="table-responsive p-2">
+                    <table class="table table-striped table-hover table-bordered w-100 table-sm" id="TableUsuarios">
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 <script src="<?= asset('build/js/usuarios/index.js') ?>"></script>

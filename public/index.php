@@ -11,8 +11,9 @@ $router->setBaseURL('/' . $_ENV['APP_NAME']);
 
 $router->get('/', [AppController::class,'index']);
 
-//ESTE ES EL URL PARA USUARIO
 $router->get('/usuario', [UsuarioController::class, 'renderizarPAgina']);
 $router->post('/usuarios/guardarAPI', [UsuarioController::class, 'guardarAPI']);
-// Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
+$router->get('/usuarios/buscarAPI', [UsuarioController::class, 'buscarAPI']);
+$router->post('/usuarios/modificarAPI', [UsuarioController::class, 'modificarAPI']);
+
 $router->comprobarRutas();
