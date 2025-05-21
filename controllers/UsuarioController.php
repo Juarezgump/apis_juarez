@@ -245,4 +245,30 @@ class UsuarioController extends ActiveRecord
             return;
         }
     }
+
+  public static function EiminarAPI(){
+        try {
+             
+            $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
+
+             $data = Usuarios::find($id);
+                // $data->sincronizar($_POST);
+                $data->sincronizar([
+                    'usuario_situacion' => 0
+                ]);
+                $data->actualizar();
+
+        } catch  (Exception $e) {
+                http_response_code(400);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'Error al eliminar',
+                    'detalle' => $e->getMessage(),
+                ]);
+            }
+       
+
+
+    }
 }
+

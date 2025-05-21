@@ -354,6 +354,57 @@ const ModificarUsuario = async (event) => {
 
 }
 
+const EliminarUsuarios = async (e) => {
+    const idUsuario = e.currentTarget.dataset.id; // Especifica qué propiedad del dataset
+    
+    const AlertaConfirmarEliminar = await Swal.fire({
+        position: "center",
+        icon: "info",
+        title: "¿Está seguro que quiere eliminar este dato?",
+        text: '¿Está completamente seguro que desea eliminar este registro?',
+        showConfirmButton: true, 
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'No, cancelar',
+        showCancelButton: true,
+    });
+
+    if (AlertaConfirmarEliminar.isConfirmed) {
+        const url = `/apis_juarez/usuarios/eliminar?id=${idUsuario}`;
+        const config = {
+            method: 'GET'
+        };
+        
+        try { 
+            const consulta = await fetch(url, config);
+            const respuesta = await consulta.json();
+            const {codigo, mensaje} = respuesta;
+
+            if(codigo ==1){
+                await Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Exito",
+                text: mensaje,
+                showConfirmButton: true,
+            });
+            BuscarUsuarios();
+            }else{
+                 await Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "Error",
+                text: mensaje,
+                showConfirmButton: true,
+            });
+
+            }
+
+            console.log(respuesta); // Corregido "comsole" a "console"
+        } catch (error) {
+            console.log(error);
+        }
+    }
+};
 
 BuscarUsuarios();
 datatable.on('click', '.modificar', llenarFormulario);
@@ -362,3 +413,4 @@ usuario_nit.addEventListener('change', EsValidoNit);
 InputUsuarioTelefono.addEventListener('change', ValidarTelefono);
 BtnLimpiar.addEventListener('click', limpiarTodo);
 BtnModificar.addEventListener('click', ModificarUsuario);
+datatable.on('click', '.eliminar', EliminarUsuarios)
