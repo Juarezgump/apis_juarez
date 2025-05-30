@@ -12,6 +12,7 @@ class Usuarios extends ActiveRecord {
         'usuario_telefono',
         'usuario_correo',
         'usuario_estado',
+        'usuario_fecha',
         'usuario_situacion'
     ];
 
@@ -24,6 +25,7 @@ class Usuarios extends ActiveRecord {
     public $usuario_correo;
     public $usuario_estado;
     public $usuario_situacion;
+    public $usuario_fecha;
 
     public function __construct($args = []){
         $this->usuario_id = $args['usuario_id'] ?? null;
@@ -33,7 +35,15 @@ class Usuarios extends ActiveRecord {
         $this->usuario_telefono = $args['usuario_telefono'] ?? 0;
         $this->usuario_correo = $args['usuario_correo'] ?? 0;
         $this->usuario_estado = $args['usuario_estado'] ?? 0;
+        $this->usuario_fecha = $args['usuario_fecha'] ?? '';
         $this->usuario_situacion = $args['usuario_situacion'] ?? 1;
+    }
+
+    public static function EliminarUsuarios($id){
+
+        $sql = "DELETE FROM usuarios WHERE usuario_id = $id";
+
+        return self::SQL($sql);
     }
 
 }

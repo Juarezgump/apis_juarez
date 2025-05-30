@@ -10,7 +10,7 @@ use MVC\Router;
 class UsuarioController extends ActiveRecord
 {
 
-    public function renderizarPagina(Router $router)
+    public static function renderizarPagina(Router $router)
     {
         $router->render('usuarios/index', []);
     }
@@ -20,6 +20,8 @@ class UsuarioController extends ActiveRecord
 
         getHeadersApi();
 
+        // echo json_encode($_POST);
+        // return;
 
 
         $_POST['usuario_apellidos'] = htmlspecialchars($_POST['usuario_apellidos']);
@@ -75,6 +77,8 @@ class UsuarioController extends ActiveRecord
         }
         $_POST['usuario_estado'] = htmlspecialchars($_POST['usuario_estado']);
 
+        $_POST['usuario_fecha'] = date('Y-m-d H:i:s', strtotime($_POST['usuario_fecha']));
+
         $estado = $_POST['usuario_estado'];
 
         if ($estado == "P" || $estado == "F" || $estado == "C") {
@@ -83,6 +87,7 @@ class UsuarioController extends ActiveRecord
             try {
 
 
+                // $data = new Usuarios();
 
                 $data = new Usuarios([
                     'usuario_nombres' => $_POST['usuario_nombres'],
@@ -91,6 +96,7 @@ class UsuarioController extends ActiveRecord
                     'usuario_telefono' => $_POST['usuario_telefono'],
                     'usuario_correo' => $_POST['usuario_correo'],
                     'usuario_estado' => $_POST['usuario_estado'],
+                    'usuario_fecha' => $_POST['usuario_fecha'],
                     'usuario_situacion' => 1
                 ]);
 
@@ -123,6 +129,8 @@ class UsuarioController extends ActiveRecord
     {
 
         try {
+
+            // $data = Usuarios::all();
 
             $sql = "SELECT * FROM usuarios where usuario_situacion = 1";
             $data = self::fetchArray($sql);
@@ -192,6 +200,7 @@ class UsuarioController extends ActiveRecord
 
         $_POST['usuario_nit'] = filter_var($_POST['usuario_nit'], FILTER_SANITIZE_NUMBER_INT);
         $_POST['usuario_correo'] = filter_var($_POST['usuario_correo'], FILTER_SANITIZE_EMAIL);
+        $_POST['usuario_fecha'] = date('Y-m-d H:i', strtotime($_POST['usuario_fecha']));
 
         if (!filter_var($_POST['usuario_correo'], FILTER_SANITIZE_EMAIL)) {
             http_response_code(400);
@@ -212,13 +221,14 @@ class UsuarioController extends ActiveRecord
 
 
                 $data = Usuarios::find($id);
+                // $data->sincronizar($_POST);
                 $data->sincronizar([
                     'usuario_nombres' => $_POST['usuario_nombres'],
                     'usuario_apellidos' => $_POST['usuario_apellidos'],
                     'usuario_nit' => $_POST['usuario_nit'],
                     'usuario_telefono' => $_POST['usuario_telefono'],
                     'usuario_correo' => $_POST['usuario_correo'],
-                    'usuario_estado' => $_POST['usuario_estado'],
+                    'usuario_fecha' => $_POST['usuario_fecha'],
                     'usuario_situacion' => 1
                 ]);
                 $data->actualizar();
@@ -246,29 +256,38 @@ class UsuarioController extends ActiveRecord
         }
     }
 
-  public static function EiminarAPI(){
+    public static function EliminarAPI()
+    {
+
         try {
-             
+
             $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
 
-             $data = Usuarios::find($id);
-                // $data->sincronizar($_POST);
-                $data->sincronizar([
-                    'usuario_situacion' => 0
-                ]);
-                $data->actualizar();
+            // $data = Usuarios::find($id);
+            // $data->sincronizar([
+            // 'usuario_situacion' => 0,
+            // ]);
+            // $data->actualizar();
 
-        } catch  (Exception $e) {
-                http_response_code(400);
-                echo json_encode([
-                    'codigo' => 0,
-                    'mensaje' => 'Error al eliminar',
-                    'detalle' => $e->getMessage(),
-                ]);
-            }
-       
+            // $data = Usuarios::find($id);
+            // $data->eliminar();
 
 
+            $ejecutar = Usuarios::EliminarUsuarios($id);
+
+
+            http_response_code(200);
+            echo json_encode([
+                'codigo' => 1,
+                'mensaje' => 'El registro ha sido eliminado correctamente'
+            ]);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Error al Eliminar',
+                'detalle' => $e->getMessage(),
+            ]);
+        }
     }
 }
-

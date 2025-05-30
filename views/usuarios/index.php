@@ -53,6 +53,13 @@
                             </div>
                         </div>
 
+                        <div class="row mb-3 ">
+                            <div class="col-lg-6">
+                                <label for="usuario_fecha" class="form-label">INGRESE LA FECHA</label>
+                                <input type="datetime-local" class="form-control" id="usuario_fecha" name="usuario_fecha" placeholder="Ingrese aca su correo ejemplo@ejemplo.com">
+                            </div>
+                        </div>
+
                         <div class="row justify-content-center mt-5">
                             <div class="col-auto">
                                 <button class="btn btn-success" type="submit" id="BtnGuardar">

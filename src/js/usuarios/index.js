@@ -103,7 +103,7 @@ const GuardarUsuario = async (event) => {
 
     const body = new FormData(FormUsuarios);
 
-    const url = '/apis_juarez/usuarios/guardarAPI';
+    const url = '/MVC/usuarios/guardarAPI';
     const config = {
         method: 'POST',
         body
@@ -113,7 +113,7 @@ const GuardarUsuario = async (event) => {
 
         const respuesta = await fetch(url, config);
         const datos = await respuesta.json();
-
+        console.log(datos)
         const { codigo, mensaje } = datos
 
         if (codigo == 1) {
@@ -151,7 +151,7 @@ const GuardarUsuario = async (event) => {
 
 const BuscarUsuarios = async () => {
 
-    const url = '/apis_juarez/usuarios/buscarAPI';
+    const url = '/MVC/usuarios/buscarAPI';
     const config = {
         method: 'GET'
     }
@@ -220,6 +220,7 @@ const datatable = new DataTable('#TableUsuarios', {
         { title: 'Correo ', data: 'usuario_correo' },
         { title: 'Telefono ', data: 'usuario_telefono' },
         { title: 'Nit', data: 'usuario_nit' },
+        { title: 'Fecha', data: 'usuario_fecha' },
         {
             title: 'Destino',
             data: 'usuario_estado',
@@ -252,6 +253,7 @@ const datatable = new DataTable('#TableUsuarios', {
                          data-telefono="${row.usuario_telefono}"  
                          data-correo="${row.usuario_correo}"  
                          data-estado="${row.usuario_estado}"  
+                         data-fecha="${row.usuario_fecha}"  
                          <i class='bi bi-pencil-square me-1'></i> Modificar
                      </button>
                      <button class='btn btn-danger eliminar mx-1' 
@@ -276,9 +278,14 @@ const llenarFormulario = (event) => {
     document.getElementById('usuario_telefono').value = datos.telefono
     document.getElementById('usuario_correo').value = datos.correo
     document.getElementById('usuario_estado').value = datos.estado
+    document.getElementById('usuario_fecha').value = datos.fecha
 
     BtnGuardar.classList.add('d-none');
     BtnModificar.classList.remove('d-none');
+
+    window.scrollTo({
+        top: 0
+    });
 
 }
 
@@ -309,7 +316,7 @@ const ModificarUsuario = async (event) => {
 
     const body = new FormData(FormUsuarios);
 
-    const url = '/apis_juarez/usuarios/modificarAPI';
+    const url = '/MVC/usuarios/modificarAPI';
     const config = {
         method: 'POST',
         body
@@ -354,63 +361,72 @@ const ModificarUsuario = async (event) => {
 
 }
 
+
 const EliminarUsuarios = async (e) => {
-    const idUsuario = e.currentTarget.dataset.id; // Especifica qué propiedad del dataset
-    
+
+    const idUsuario = e.currentTarget.dataset.id
+
     const AlertaConfirmarEliminar = await Swal.fire({
         position: "center",
         icon: "info",
-        title: "¿Está seguro que quiere eliminar este dato?",
-        text: '¿Está completamente seguro que desea eliminar este registro?',
-        showConfirmButton: true, 
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'No, cancelar',
-        showCancelButton: true,
+        title: "¿Desea ejecutar esta acción?",
+        text: 'Esta completamente seguro que desea eliminar este registro',
+        showConfirmButton: true,
+        confirmButtonText: 'Si, Eliminar',
+        confirmButtonColor: 'red',
+        cancelButtonText: 'No, Cancelar',
+        showCancelButton: true
     });
 
     if (AlertaConfirmarEliminar.isConfirmed) {
-        const url = `/apis_juarez/usuarios/eliminar?id=${idUsuario}`;
+
+        const url = `/MVC/usuarios/eliminar?id=${idUsuario}`;
         const config = {
             method: 'GET'
-        };
-        
-        try { 
+        }
+
+        try {
+
             const consulta = await fetch(url, config);
             const respuesta = await consulta.json();
-            const {codigo, mensaje} = respuesta;
+            const { codigo, mensaje } = respuesta;
 
-            if(codigo ==1){
+            if (codigo == 1) {
+
                 await Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Exito",
-                text: mensaje,
-                showConfirmButton: true,
-            });
-            BuscarUsuarios();
-            }else{
-                 await Swal.fire({
-                position: "center",
-                icon: "info",
-                title: "Error",
-                text: mensaje,
-                showConfirmButton: true,
-            });
+                    position: "center",
+                    icon: "success",
+                    title: "Exito",
+                    text: mensaje,
+                    showConfirmButton: true,
+                });
 
+                BuscarUsuarios();
+            } else {
+                await Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Error",
+                    text: mensaje,
+                    showConfirmButton: true,
+                });
             }
 
-            console.log(respuesta); // Corregido "comsole" a "console"
         } catch (error) {
-            console.log(error);
+            console.log(error)
         }
+
     }
-};
+
+}
+
+
 
 BuscarUsuarios();
+datatable.on('click', '.eliminar', EliminarUsuarios);
 datatable.on('click', '.modificar', llenarFormulario);
 FormUsuarios.addEventListener('submit', GuardarUsuario);
 usuario_nit.addEventListener('change', EsValidoNit);
 InputUsuarioTelefono.addEventListener('change', ValidarTelefono);
 BtnLimpiar.addEventListener('click', limpiarTodo);
 BtnModificar.addEventListener('click', ModificarUsuario);
-datatable.on('click', '.eliminar', EliminarUsuarios)
