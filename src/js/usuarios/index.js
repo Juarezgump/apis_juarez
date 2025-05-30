@@ -103,7 +103,7 @@ const GuardarUsuario = async (event) => {
 
     const body = new FormData(FormUsuarios);
 
-    const url = '/MVC/usuarios/guardarAPI';
+    const url = '/apis_juarez/usuarios/guardarAPI';
     const config = {
         method: 'POST',
         body
@@ -151,7 +151,7 @@ const GuardarUsuario = async (event) => {
 
 const BuscarUsuarios = async () => {
 
-    const url = '/MVC/usuarios/buscarAPI';
+    const url = '/apis_juarez/usuarios/buscarAPI';
     const config = {
         method: 'GET'
     }
@@ -316,7 +316,7 @@ const ModificarUsuario = async (event) => {
 
     const body = new FormData(FormUsuarios);
 
-    const url = '/MVC/usuarios/modificarAPI';
+    const url = '/apis_juarez/usuarios/modificarAPI';
     const config = {
         method: 'POST',
         body
@@ -380,7 +380,7 @@ const EliminarUsuarios = async (e) => {
 
     if (AlertaConfirmarEliminar.isConfirmed) {
 
-        const url = `/MVC/usuarios/eliminar?id=${idUsuario}`;
+        const url = `/apis_juarez/usuarios/eliminar?id=${idUsuario}`;
         const config = {
             method: 'GET'
         }
