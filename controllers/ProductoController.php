@@ -28,27 +28,42 @@ class ProductoController extends ActiveRecord{
             return;
         }
 
-        $_POST['pro_precio'] = filter_var($_POST['pro_precio'], FILTER_VALIDATE_INT);
-
-        if ($_POST['pro_precio'] <= 0){
+        $nombre_repetido = trim(strtolower($_POST['pro_nombre']));
+        $sql_verificar = "SELECT pro_id FROM productos 
+                         WHERE LOWER(TRIM(pro_nombre)) = " . self::$db->quote($nombre_repetido) . "
+                         AND pro_situacion = 1";
+        $nombre_existe = self::fetchFirst($sql_verificar);
+        
+        if ($nombre_existe) {
             http_response_code(400);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'El precio debe ser mayor a cero'
+                'mensaje' => 'Ya existe un producto con este nombre'
             ]);
             return;
         }
 
-        $_POST['pro_cantidad'] = filter_var($_POST['pro_cantidad'], FILTER_VALIDATE_INT);
-
-        if ($_POST['pro_cantidad'] < 0){
+        $precio_validado = filter_var($_POST['pro_precio'], FILTER_VALIDATE_INT);
+        if ($precio_validado === false || $precio_validado <= 0){
             http_response_code(400);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'La cantidad del producto no puede ser negativa'
+                'mensaje' => 'El precio debe ser mayor a cero y ser un número válido'
             ]);
             return;
         }
+        $_POST['pro_precio'] = $precio_validado;
+
+        $cantidad_validada = filter_var($_POST['pro_cantidad'], FILTER_VALIDATE_INT);
+        if ($cantidad_validada === false || $cantidad_validada < 0){
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'La cantidad debe ser un número válido y no puede ser negativa'
+            ]);
+            return;
+        }
+        $_POST['pro_cantidad'] = $cantidad_validada;
 
         try {
             $data = new Productos([
@@ -63,7 +78,7 @@ class ProductoController extends ActiveRecord{
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'El producto ha sido registrado con exito'
+                'mensaje' => 'El producto ha sido registrado con éxito'
             ]);
         } catch (Exception $e) {
             http_response_code(400);
@@ -104,7 +119,6 @@ class ProductoController extends ActiveRecord{
         $id = $_POST['pro_id'];
 
         $_POST['pro_nombre'] = htmlspecialchars($_POST['pro_nombre']);
-
         $cantidad_nombre = strlen($_POST['pro_nombre']);
 
         if ($cantidad_nombre < 2) {
@@ -116,27 +130,43 @@ class ProductoController extends ActiveRecord{
             return;
         }
 
-        $_POST['pro_precio'] = filter_var($_POST['pro_precio'], FILTER_VALIDATE_INT);
-
-        if ($_POST['pro_precio'] <= 0) {
+        $nombre_repetido = trim(strtolower($_POST['pro_nombre']));
+        $sql_verificar = "SELECT pro_id FROM productos 
+                         WHERE LOWER(TRIM(pro_nombre)) = " . self::$db->quote($nombre_repetido) . "
+                         AND pro_situacion = 1 
+                         AND pro_id != " . (int)$id;
+        $nombre_existe = self::fetchFirst($sql_verificar);
+        
+        if ($nombre_existe) {
             http_response_code(400);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'El precio debe ser mayor a cero'
+                'mensaje' => 'Ya existe otro producto con este nombre'
             ]);
             return;
         }
 
-        $_POST['pro_cantidad'] = filter_var($_POST['pro_cantidad'], FILTER_VALIDATE_INT);
-
-        if ($_POST['pro_cantidad'] < 0) {
+        $precio_validado = filter_var($_POST['pro_precio'], FILTER_VALIDATE_INT);
+        if ($precio_validado === false || $precio_validado <= 0) {
             http_response_code(400);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'La cantidad no puede ser negativa'
+                'mensaje' => 'El precio debe ser mayor a cero y ser un número válido'
             ]);
             return;
         }
+        $_POST['pro_precio'] = $precio_validado;
+
+        $cantidad_validada = filter_var($_POST['pro_cantidad'], FILTER_VALIDATE_INT);
+        if ($cantidad_validada === false || $cantidad_validada < 0) {
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'La cantidad debe ser un número válido y no puede ser negativa'
+            ]);
+            return;
+        }
+        $_POST['pro_cantidad'] = $cantidad_validada;
 
         try {
             $data = Productos::find($id);
@@ -152,7 +182,7 @@ class ProductoController extends ActiveRecord{
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'La informacion del producto ha sido modificada con exito'
+                'mensaje' => 'La información del producto ha sido modificada con éxito'
             ]);
 
         } catch (Exception $e) {
@@ -170,39 +200,44 @@ class ProductoController extends ActiveRecord{
         try {
             $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
 
+            $stock_actual = self::ValidarStockProducto($id);
+            
+            if ($stock_actual > 0) {
+                http_response_code(400);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'No se puede eliminar el producto porque tiene existencias en stock',
+                    'detalle' => "Stock actual: $stock_actual unidades. Debe agotar el stock antes de eliminar el producto."
+                ]);
+                return;
+            }
+
+            $sql_verificar = "SELECT pro_id, pro_nombre FROM productos WHERE pro_id = $id AND pro_situacion = 1";
+            $producto = self::fetchFirst($sql_verificar);
+            
+            if (!$producto) {
+                http_response_code(404);
+                echo json_encode([
+                    'codigo' => 0,
+                    'mensaje' => 'El producto no existe o ya está inactivo'
+                ]);
+                return;
+            }
+
             self::EliminarProducto($id, 0);
 
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'El producto ha sido desactivado correctamente'
+                'mensaje' => 'El producto ha sido desactivado correctamente',
+                'detalle' => "Producto '{$producto['pro_nombre']}' desactivado exitosamente"
             ]);
         
         } catch (Exception $e) {
             http_response_code(400);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al desactivar el producto',
-                'detalle' => $e->getMessage()
-            ]);
-        }
-    }
-
-    public static function productosDisponiblesAPI(){
-        try {
-            $data = self::ObtenerProductosDisponibles();
-            
-            http_response_code(200);
-            echo json_encode([
-                'codigo' => 1,
-                'mensaje' => 'Productos disponibles obtenidos correctamente',
-                'data' => $data
-            ]);
-        } catch (Exception $e) {
-            http_response_code(400);
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'Error al obtener productos disponibles',
+                'mensaje' => 'Error al eliminar el producto',
                 'detalle' => $e->getMessage()
             ]);
         }
