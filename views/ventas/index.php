@@ -29,7 +29,7 @@
                             <div class="col-12">
                                 <h5 class="text-primary">Productos Disponibles</h5>
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-hover" id="TableProductosDisponibles">
+                                    <table class="table table-striped table-hover">
                                         <thead>
                                             <tr>
                                                 <th width="5%">Seleccionar</th>
@@ -66,7 +66,7 @@
                                         <tfoot>
                                             <tr class="table-info">
                                                 <td colspan="3" class="text-end"><strong>TOTAL:</strong></td>
-                                                <td><strong id="totalVenta">Q. 0.00</strong></td>
+                                                <td><strong><span id="totalVenta">Q. 0.00</span></strong></td>
                                                 <td></td>
                                             </tr>
                                         </tfoot>
@@ -82,7 +82,7 @@
                                 </button>
                             </div>
                             <div class="col-auto">
-                                <button class="btn btn-warning d-none" type="button" id="BtnModificarVenta">
+                                <button class="btn btn-warning" type="button" id="BtnModificarVenta" style="display: none;">
                                     <i class="bi bi-pencil-square me-1"></i>Modificar Venta
                                 </button>
                             </div>

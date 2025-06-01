@@ -60,6 +60,12 @@ const CargarProductos = async () => {
         if (datos.codigo == 1) {
             productos = datos.data;
             MostrarProductos();
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: datos.mensaje || "Error al cargar productos"
+            });
         }
     } catch (error) {
         Swal.fire({
@@ -72,6 +78,11 @@ const CargarProductos = async () => {
 
 const MostrarProductos = () => {
     productosDisponibles.innerHTML = '';
+    
+    if (!productos || productos.length === 0) {
+        productosDisponibles.innerHTML = '<tr><td colspan="6" class="text-center">No hay productos disponibles</td></tr>';
+        return;
+    }
     
     productos.forEach(producto => {
         const fila = document.createElement('tr');
@@ -258,6 +269,7 @@ const GuardarVenta = async (event) => {
             method: 'POST',
             body: formData
         });
+        
         const datos = await respuesta.json();
 
         if (datos.codigo == 1) {
@@ -268,7 +280,6 @@ const GuardarVenta = async (event) => {
             });
 
             LimpiarTodo();
-            BuscarVentas();
         } else {
             await Swal.fire({
                 icon: "error",
@@ -293,11 +304,12 @@ const BuscarVentas = async () => {
         const datos = await respuesta.json();
 
         if (datos.codigo == 1) {
-            datatable.clear().draw();
-            datatable.rows.add(datos.data).draw();
+            datatable.clear();
+            datatable.rows.add(datos.data);
+            datatable.draw(false); 
         }
     } catch (error) {
-        console.log('Error:', error);
+        console.error('Error:', error);
     }
 };
 
@@ -424,6 +436,11 @@ window.VerDetalle = async (ventaId) => {
 window.ModificarVenta = async (ventaId) => {
     try {
         const respuesta = await fetch(`/apis_juarez/ventas/detalle?id=${ventaId}`);
+        
+        if (!respuesta.ok) {
+            throw new Error(`HTTP ${respuesta.status}: ${respuesta.statusText}`);
+        }
+        
         const datos = await respuesta.json();
 
         if (datos.codigo == 1) {
@@ -438,9 +455,9 @@ window.ModificarVenta = async (ventaId) => {
             carrito = detalles.map(detalle => ({
                 pro_id: detalle.detalle_producto_id,
                 nombre: detalle.pro_nombre,
-                precio: detalle.detalle_precio_unitario,
-                cantidad: detalle.detalle_cantidad,
-                subtotal: detalle.detalle_subtotal
+                precio: parseFloat(detalle.detalle_precio_unitario),
+                cantidad: parseInt(detalle.detalle_cantidad),
+                subtotal: parseFloat(detalle.detalle_subtotal)
             }));
 
             ActualizarCarrito();
@@ -448,13 +465,31 @@ window.ModificarVenta = async (ventaId) => {
             BtnGuardarVenta.style.display = 'none';
             BtnModificarVenta.style.display = 'inline-block';
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            FormVentas.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            await Swal.fire({
+                icon: "success",
+                title: "Modo edición",
+                text: "Venta cargada para modificación",
+                timer: 2000,
+                showConfirmButton: false
+            });
+            
+        } else {
+            await Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: datos.mensaje || "No se pudo cargar la venta"
+            });
         }
     } catch (error) {
-        Swal.fire({
+        await Swal.fire({
             icon: "error",
             title: "Error",
-            text: "No se pudo cargar la venta"
+            text: `Error: ${error.message}`
         });
     }
 };
@@ -478,8 +513,20 @@ const ModificarVentaSubmit = async (event) => {
         return;
     }
 
+    const ventaId = document.getElementById('venta_id').value;
+    
+    if (!ventaId) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se encontró el ID de la venta"
+        });
+        BtnModificarVenta.disabled = false;
+        return;
+    }
+
     const formData = new FormData();
-    formData.append('venta_id', document.getElementById('venta_id').value);
+    formData.append('venta_id', ventaId);
     formData.append('productos', JSON.stringify(carrito));
 
     try {
@@ -487,6 +534,7 @@ const ModificarVentaSubmit = async (event) => {
             method: 'POST',
             body: formData
         });
+        
         const datos = await respuesta.json();
 
         if (datos.codigo == 1) {
@@ -497,7 +545,6 @@ const ModificarVentaSubmit = async (event) => {
             });
 
             LimpiarTodo();
-            BuscarVentas();
         } else {
             await Swal.fire({
                 icon: "error",
@@ -509,7 +556,7 @@ const ModificarVentaSubmit = async (event) => {
         await Swal.fire({
             icon: "error",
             title: "Error",
-            text: "Error al modificar"
+            text: "Error al modificar la venta"
         });
     }
     
@@ -519,6 +566,7 @@ const ModificarVentaSubmit = async (event) => {
 const LimpiarTodo = () => {
     selectCliente.value = '';
     carrito = [];
+    productos = [];
     seccionProductos.style.display = 'none';
     seccionCarrito.style.display = 'none';
     BtnGuardarVenta.style.display = 'none';
@@ -527,7 +575,7 @@ const LimpiarTodo = () => {
 };
 
 CargarClientes();
-BuscarVentas();
+BuscarVentas(); 
 
 BtnCargarProductos.addEventListener('click', CargarProductos);
 FormVentas.addEventListener('submit', GuardarVenta);
