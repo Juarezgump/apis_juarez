@@ -17,6 +17,7 @@ class VentaController extends ActiveRecord{
         $router->render('ventas/index', []);
     }
 
+    //Guardar
     public static function guardarAPI(){
         getHeadersApi();
 
@@ -118,6 +119,8 @@ class VentaController extends ActiveRecord{
         }
     }
 
+
+    //Buscar
     public static function buscarAPI(){
         try {
             $data = self::ObtenerVentasConClientes();
@@ -138,6 +141,8 @@ class VentaController extends ActiveRecord{
         }
     }
 
+
+    //Obtener
     public static function obtenerDetalleAPI(){
         try {
             $venta_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -265,4 +270,66 @@ class VentaController extends ActiveRecord{
         }
     }
 
+
+
+    //Pbtener clientes
+    public static function obtenerClientesAPI(){
+        try {
+            $sql = "SELECT usuario_id, usuario_nombres, usuario_apellidos, usuario_correo 
+                    FROM usuarios WHERE usuario_situacion = 1";
+            $data = self::fetchArray($sql);
+
+            http_response_code(200);
+            echo json_encode([
+                'codigo' => 1,
+                'mensaje' => 'Clientes obtenidos correctamente',
+                'data' => $data
+            ]);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Error al obtener los clientes',
+                'detalle' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public static function ObtenerVentasConClientes(){
+        $sql = "SELECT v.venta_id, v.venta_total, v.venta_fecha, 
+                       u.usuario_nombres, u.usuario_apellidos
+                FROM ventas v 
+                INNER JOIN usuarios u ON v.venta_cliente_id = u.usuario_id 
+                WHERE v.venta_situacion = 1 ORDER BY v.venta_fecha DESC";
+        return self::fetchArray($sql);
+    }
+
+    public static function ObtenerVentaPorId($id){
+        $sql = "SELECT v.*, u.usuario_nombres, u.usuario_apellidos, u.usuario_correo
+                FROM ventas v INNER JOIN usuarios u ON v.venta_cliente_id = u.usuario_id 
+                WHERE v.venta_id = $id AND v.venta_situacion = 1";
+        return self::fetchFirst($sql);
+    }
+
+    public static function ObtenerDetallesPorVenta($venta_id){
+        $sql = "SELECT vd.*, p.pro_nombre FROM venta_detalles vd 
+                INNER JOIN productos p ON vd.detalle_producto_id = p.pro_id 
+                WHERE vd.detalle_venta_id = $venta_id ORDER BY p.pro_nombre";
+        return self::fetchArray($sql);
+    }
+
+    public static function EliminarDetallesPorVenta($venta_id){
+        return self::SQL("DELETE FROM venta_detalles WHERE detalle_venta_id = $venta_id");
+    }
+
+    public static function RestaurarStockDeVenta($venta_id){
+        $detalles = self::fetchArray("SELECT detalle_producto_id, detalle_cantidad 
+                                     FROM venta_detalles WHERE detalle_venta_id = $venta_id");
+        
+        foreach($detalles as $d){
+            self::SQL("UPDATE productos SET pro_cantidad = pro_cantidad + " . 
+                     $d['detalle_cantidad'] . " WHERE pro_id = " . $d['detalle_producto_id']);
+        }
+        return true;
+    }
 }

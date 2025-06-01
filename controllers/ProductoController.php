@@ -243,6 +243,25 @@ class ProductoController extends ActiveRecord{
         }
     }
 
+    public static function productosDisponiblesAPI(){
+        try {
+            $data = self::ObtenerProductosDisponibles();
+
+            http_response_code(200);
+            echo json_encode([
+                'codigo' => 1,
+                'mensaje' => 'Productos disponibles obtenidos correctamente',
+                'data' => $data
+            ]);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Error al obtener los productos disponibles',
+                'detalle' => $e->getMessage()
+            ]);
+        }
+    }
 
     public static function EliminarProducto($id, $situacion)
     {
@@ -265,7 +284,7 @@ class ProductoController extends ActiveRecord{
 
     public static function ObtenerProductosDisponibles()
     {
-        $sql = "SELECT * FROM productos WHERE pro_cantidad > 0 AND pro_situacion = 1";
+        $sql = "SELECT * FROM productos WHERE pro_cantidad > 0 AND pro_situacion = 1 ORDER BY pro_nombre";
         return self::fetchArray($sql);
     }
 

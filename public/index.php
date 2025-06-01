@@ -5,6 +5,7 @@ use Controllers\UsuarioController;
 use MVC\Router;
 use Controllers\AppController;
 use Controllers\ProductoController;
+use Controllers\VentaController;
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -23,6 +24,14 @@ $router->get('/productos/buscarAPI', [ProductoController::class, 'buscarAPI']);
 $router->post('/productos/modificarAPI', [ProductoController::class, 'modificarAPI']);
 $router->get('/productos/eliminar', [ProductoController::class, 'EliminarAPI']);
 $router->get('/productos/disponibles', [ProductoController::class, 'productosDisponiblesAPI']);
+
+// RUTAS PARA VENTAS
+$router->get('/ventas', [VentaController::class, 'renderizarPagina']);
+$router->post('/ventas/guardarAPI', [VentaController::class, 'guardarAPI']);
+$router->get('/ventas/buscarAPI', [VentaController::class, 'buscarAPI']);
+$router->get('/ventas/detalle', [VentaController::class, 'obtenerDetalleAPI']);
+$router->post('/ventas/modificarAPI', [VentaController::class, 'modificarAPI']);
+$router->get('/ventas/clientes', [VentaController::class, 'obtenerClientesAPI']);
 
 
 

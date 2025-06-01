@@ -47,7 +47,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item nav-link text-white" href="/apis_juarez/usuarios">
+                            <a class="dropdown-item nav-link text-white" href="/apis_juarez/usuario">
                                 <i class="bi bi-people me-2"></i>Clientes
                             </a>
                         </li>
