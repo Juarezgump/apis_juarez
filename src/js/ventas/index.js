@@ -169,6 +169,10 @@ const AgregarAlCarrito = (productoId) => {
 
     ActualizarCarrito();
     
+    if (!document.getElementById('venta_id').value) {
+        BtnGuardarVenta.style.display = 'inline-block';
+    }
+    
     document.querySelector(`[data-id="${productoId}"].producto-check`).checked = false;
     document.querySelector(`[data-id="${productoId}"].cantidad-input`).disabled = true;
     document.querySelector(`[data-id="${productoId}"].agregar-btn`).disabled = true;
@@ -205,7 +209,6 @@ const ActualizarCarrito = () => {
 
     if (carrito.length > 0) {
         seccionCarrito.style.display = 'block';
-        BtnGuardarVenta.style.display = 'inline-block';
     } else {
         seccionCarrito.style.display = 'none';
         BtnGuardarVenta.style.display = 'none';
@@ -280,6 +283,7 @@ const GuardarVenta = async (event) => {
             });
 
             LimpiarTodo();
+            BuscarVentas();
         } else {
             await Swal.fire({
                 icon: "error",
@@ -306,7 +310,16 @@ const BuscarVentas = async () => {
         if (datos.codigo == 1) {
             datatable.clear();
             datatable.rows.add(datos.data);
-            datatable.draw(false); 
+            datatable.draw(false);
+            
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: `${datos.data.length} ventas encontradas`,
+                showConfirmButton: false,
+                timer: 2000,
+                toast: true
+            });
         }
     } catch (error) {
         console.error('Error:', error);
@@ -436,11 +449,6 @@ window.VerDetalle = async (ventaId) => {
 window.ModificarVenta = async (ventaId) => {
     try {
         const respuesta = await fetch(`/apis_juarez/ventas/detalle?id=${ventaId}`);
-        
-        if (!respuesta.ok) {
-            throw new Error(`HTTP ${respuesta.status}: ${respuesta.statusText}`);
-        }
-        
         const datos = await respuesta.json();
 
         if (datos.codigo == 1) {
@@ -450,7 +458,13 @@ window.ModificarVenta = async (ventaId) => {
             selectCliente.value = venta.venta_cliente_id;
             document.getElementById('venta_id').value = venta.venta_id;
 
-            await CargarProductos();
+            const respuestaProductos = await fetch('/apis_juarez/productos/disponibles');
+            const datosProductos = await respuestaProductos.json();
+            
+            if (datosProductos.codigo == 1) {
+                productos = datosProductos.data;
+                MostrarProductos();
+            }
 
             carrito = detalles.map(detalle => ({
                 pro_id: detalle.detalle_producto_id,
@@ -463,33 +477,26 @@ window.ModificarVenta = async (ventaId) => {
             ActualizarCarrito();
 
             BtnGuardarVenta.style.display = 'none';
+            BtnCargarProductos.style.display = 'none';
             BtnModificarVenta.style.display = 'inline-block';
+            BtnLimpiarVenta.style.display = 'inline-block';
 
-            FormVentas.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
-            
-            await Swal.fire({
-                icon: "success",
-                title: "Modo edición",
-                text: "Venta cargada para modificación",
-                timer: 2000,
-                showConfirmButton: false
+            window.scrollTo({
+                top: 0
             });
             
         } else {
-            await Swal.fire({
+            Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: datos.mensaje || "No se pudo cargar la venta"
             });
         }
     } catch (error) {
-        await Swal.fire({
+        Swal.fire({
             icon: "error",
             title: "Error",
-            text: `Error: ${error.message}`
+            text: "Error al cargar la venta"
         });
     }
 };
@@ -538,22 +545,35 @@ const ModificarVentaSubmit = async (event) => {
         const datos = await respuesta.json();
 
         if (datos.codigo == 1) {
-            await Swal.fire({
+            Swal.fire({
                 icon: "success",
                 title: "Éxito",
                 text: datos.mensaje
             });
 
             LimpiarTodo();
+            BuscarVentas();
+            
+            setTimeout(() => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'Tabla actualizada',
+                    text: 'Los cambios se han guardado correctamente',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    toast: true
+                });
+            }, 1000);
         } else {
-            await Swal.fire({
+            Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: datos.mensaje
             });
         }
     } catch (error) {
-        await Swal.fire({
+        Swal.fire({
             icon: "error",
             title: "Error",
             text: "Error al modificar la venta"
@@ -567,10 +587,17 @@ const LimpiarTodo = () => {
     selectCliente.value = '';
     carrito = [];
     productos = [];
+    productosDisponibles.innerHTML = '';
+    carritoItems.innerHTML = '';
+    totalVenta.textContent = 'Q. 0.00';
     seccionProductos.style.display = 'none';
     seccionCarrito.style.display = 'none';
+    
     BtnGuardarVenta.style.display = 'none';
+    BtnCargarProductos.style.display = 'inline-block';
     BtnModificarVenta.style.display = 'none';
+    BtnLimpiarVenta.style.display = 'inline-block';
+    
     document.getElementById('venta_id').value = '';
 };
 
