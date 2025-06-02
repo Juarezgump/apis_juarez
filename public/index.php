@@ -4,6 +4,7 @@ require_once __DIR__ . '/../includes/app.php';
 use Controllers\UsuarioController;
 use MVC\Router;
 use Controllers\AppController;
+use Controllers\FacturaController;
 use Controllers\ProductoController;
 use Controllers\VentaController;
 
@@ -25,7 +26,7 @@ $router->post('/productos/modificarAPI', [ProductoController::class, 'modificarA
 $router->get('/productos/eliminar', [ProductoController::class, 'EliminarAPI']);
 $router->get('/productos/disponibles', [ProductoController::class, 'productosDisponiblesAPI']);
 
-// RUTAS PARA VENTAS
+// RUTAS VENTAS
 $router->get('/ventas', [VentaController::class, 'renderizarPagina']);
 $router->post('/ventas/guardarAPI', [VentaController::class, 'guardarAPI']);
 $router->get('/ventas/buscarAPI', [VentaController::class, 'buscarAPI']);
@@ -33,6 +34,9 @@ $router->get('/ventas/detalle', [VentaController::class, 'obtenerDetalleAPI']);
 $router->post('/ventas/modificarAPI', [VentaController::class, 'modificarAPI']);
 $router->get('/ventas/clientes', [VentaController::class, 'obtenerClientesAPI']);
 
-
+//Rutas Factura 
+$router->get('/facturas/generar', [FacturaController::class, 'generarPDF']);
+$router->get('/facturas/previsualizar', [FacturaController::class, 'previsualizarFactura']);
+$router->get('/facturas/descargar', [FacturaController::class, 'descargarFactura']);
 
 $router->comprobarRutas();

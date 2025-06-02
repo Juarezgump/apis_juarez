@@ -481,8 +481,18 @@ window.ModificarVenta = async (ventaId) => {
             BtnModificarVenta.style.display = 'inline-block';
             BtnLimpiarVenta.style.display = 'inline-block';
 
+            // Scroll suave y alerta en toast como estaba
             window.scrollTo({
                 top: 0
+            });
+
+            Swal.fire({
+                position: 'top-end',
+                icon: 'info',
+                title: 'Puedes Modificar tu compra',
+                showConfirmButton: false,
+                timer: 2000,
+                toast: true
             });
             
         } else {
@@ -545,10 +555,12 @@ const ModificarVentaSubmit = async (event) => {
         const datos = await respuesta.json();
 
         if (datos.codigo == 1) {
-            Swal.fire({
+            // SOLO CAMBIO AQUÍ: Agregar botón OK al mensaje de éxito
+            await Swal.fire({
                 icon: "success",
                 title: "Éxito",
-                text: datos.mensaje
+                text: datos.mensaje,
+                confirmButtonText: "OK"
             });
 
             LimpiarTodo();
