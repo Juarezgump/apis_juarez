@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="<?= asset('images/cit.png') ?>" type="image/x-icon">
     <link rel="stylesheet" href="<?= asset('build/styles.css') ?>">
     <title>Sistema de Ventas</title>
+    
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -41,6 +42,13 @@
                         <i class="bi bi-cart-plus me-2"></i>Estadisticas
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/apis_juarez/mapas">
+                        <i class="bi bi-cart-plus me-2"></i>Mapas
+                    </a>
+                </li>
+
 
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">

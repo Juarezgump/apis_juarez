@@ -50,14 +50,14 @@ function getColorForEstado(cantidad) {
 let color = ""
 console.log(cantidad)
     if(cantidad > 50){
-        color = "green"
+        color = "lightgray"
 
     }
-    if(cantidad > 2 && cantidad < 40){
-        color = 'yellow'
+    if(cantidad > 16 && cantidad < 40){
+        color = 'lightblue'
     }
     if( cantidad <= 15){
-color = 'red'
+color = 'mistyrose'
     }
    
     return color;

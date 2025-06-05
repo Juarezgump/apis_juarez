@@ -8,7 +8,7 @@ use Controllers\FacturaController;
 use Controllers\ProductoController;
 use Controllers\VentaController;
 use Controllers\EstadisticaController;
-use Controllers\EstadisticaControllerController;
+use Controllers\MapasController;
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -43,7 +43,14 @@ $router->get('/facturas/descargar', [FacturaController::class, 'descargarFactura
 
 
 //Estadisticas
-$router->get('/estadisticas', [EstadisticaController::class, 'renderizarPAgina']);
+$router->get('/estadisticas', [EstadisticaController::class, 'renderizarPagina']);
 $router->get('/estadisticas/buscarAPI', [EstadisticaController::class, 'buscarAPI']);
+
+
+//Mapas
+$router->get('/mapas', [MapasController::class, 'renderizarPagina']);
+
+
+
 
 $router->comprobarRutas();

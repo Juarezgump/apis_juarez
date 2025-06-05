@@ -30,6 +30,15 @@ class VentaController extends ActiveRecord{
             return;
         }
 
+        if (empty($_POST['venta_fecha'])) {
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Debe seleccionar una fecha para la venta'
+            ]);
+            return;
+        }
+
         if (empty($_POST['productos'])) {
             http_response_code(400);
             echo json_encode([
@@ -46,6 +55,19 @@ class VentaController extends ActiveRecord{
             echo json_encode([
                 'codigo' => 0,
                 'mensaje' => 'Formato de productos inválido'
+            ]);
+            return;
+        }
+
+        // Validar formato de fecha
+        $fecha_venta = $_POST['venta_fecha'];
+        $fecha_formateada = date('Y-m-d H:i:s', strtotime($fecha_venta));
+        
+        if (!$fecha_formateada) {
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Formato de fecha inválido'
             ]);
             return;
         }
@@ -76,7 +98,7 @@ class VentaController extends ActiveRecord{
             $venta = new Ventas([
                 'venta_cliente_id' => $_POST['venta_cliente_id'],
                 'venta_total' => $total_venta,
-                'venta_fecha' => date('Y-m-d H:i:s'),
+                'venta_fecha' => $fecha_formateada,
                 'venta_situacion' => 1
             ]);
 
@@ -119,7 +141,6 @@ class VentaController extends ActiveRecord{
         }
     }
 
-
     //Buscar
     public static function buscarAPI(){
         try {
@@ -141,8 +162,7 @@ class VentaController extends ActiveRecord{
         }
     }
 
-
-    //Obtener
+    //Obtener detalle
     public static function obtenerDetalleAPI(){
         try {
             $venta_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -167,6 +187,7 @@ class VentaController extends ActiveRecord{
         }
     }
 
+    //Modificar
     public static function modificarAPI(){
         getHeadersApi();
 
@@ -180,6 +201,15 @@ class VentaController extends ActiveRecord{
         }
 
         $venta_id = $_POST['venta_id'];
+
+        if (empty($_POST['venta_fecha'])) {
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Debe seleccionar una fecha para la venta'
+            ]);
+            return;
+        }
 
         if (empty($_POST['productos'])) {
             http_response_code(400);
@@ -201,13 +231,29 @@ class VentaController extends ActiveRecord{
             return;
         }
 
+        // Validar formato de fecha
+        $fecha_venta = $_POST['venta_fecha'];
+        $fecha_formateada = date('Y-m-d H:i:s', strtotime($fecha_venta));
+        
+        if (!$fecha_formateada) {
+            http_response_code(400);
+            echo json_encode([
+                'codigo' => 0,
+                'mensaje' => 'Formato de fecha inválido'
+            ]);
+            return;
+        }
+
         $total_venta = 0;
 
         try {
+            // Restaurar stock antes de validar
             self::RestaurarStockDeVenta($venta_id);
 
+            // Eliminar detalles anteriores
             self::EliminarDetallesPorVenta($venta_id);
 
+            // Validar stock para los nuevos productos
             foreach ($productos as $p) {
                 $pro_id = $p['pro_id'];
                 $cantidad_solicitada = $p['cantidad'];
@@ -228,13 +274,15 @@ class VentaController extends ActiveRecord{
                 $total_venta += $subtotal;
             }
 
+            // Actualizar la venta con nueva fecha y total
             $venta = Ventas::find($venta_id);
             $venta->sincronizar([
                 'venta_total' => $total_venta,
-                'venta_fecha' => date('Y-m-d H:i:s')
+                'venta_fecha' => $fecha_formateada
             ]);
             $venta->actualizar();
 
+            // Crear nuevos detalles y actualizar stock
             foreach ($productos as $p) {
                 $pro_id = $p['pro_id'];
                 $cantidad = $p['cantidad'];
@@ -270,9 +318,7 @@ class VentaController extends ActiveRecord{
         }
     }
 
-
-
-    //Pbtener clientes
+    //Obtener clientes
     public static function obtenerClientesAPI(){
         try {
             $sql = "SELECT usuario_id, usuario_nombres, usuario_apellidos, usuario_correo 

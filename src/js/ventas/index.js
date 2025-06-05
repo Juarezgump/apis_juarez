@@ -5,6 +5,7 @@ import { lenguaje } from "../lenguaje";
 
 const FormVentas = document.getElementById('FormVentas');
 const selectCliente = document.getElementById('venta_cliente_id');
+const inputFecha = document.getElementById('venta_fecha');
 const BtnCargarProductos = document.getElementById('BtnCargarProductos');
 const BtnGuardarVenta = document.getElementById('BtnGuardarVenta');
 const BtnModificarVenta = document.getElementById('BtnModificarVenta');
@@ -18,9 +19,16 @@ const totalVenta = document.getElementById('totalVenta');
 let carrito = [];
 let productos = [];
 
+// Función para establecer fecha y hora actual
+const establecerFechaActual = () => {
+    const ahora = new Date();
+    const fechaLocal = new Date(ahora.getTime() - ahora.getTimezoneOffset() * 60000);
+    inputFecha.value = fechaLocal.toISOString().slice(0, 16);
+};
+
 const CargarClientes = async () => {
     try {
-        const respuesta = await fetch('/apis_juarez/ventas/clientes');
+        const respuesta = await fetch('/apis_juarez/ventas/clientes'); 
         const datos = await respuesta.json();
         
         if (datos.codigo == 1) {
@@ -49,6 +57,15 @@ const CargarProductos = async () => {
             icon: "warning",
             title: "Cliente requerido",
             text: "Debe seleccionar un cliente primero"
+        });
+        return;
+    }
+
+    if (!inputFecha.value) {
+        Swal.fire({
+            icon: "warning",
+            title: "Fecha requerida",
+            text: "Debe seleccionar una fecha para la venta"
         });
         return;
     }
@@ -253,6 +270,16 @@ const GuardarVenta = async (event) => {
         return;
     }
 
+    if (!inputFecha.value) {
+        Swal.fire({
+            icon: "warning",
+            title: "Fecha requerida",
+            text: "Debe seleccionar una fecha para la venta"
+        });
+        BtnGuardarVenta.disabled = false;
+        return;
+    }
+
     if (carrito.length === 0) {
         Swal.fire({
             icon: "warning",
@@ -265,6 +292,7 @@ const GuardarVenta = async (event) => {
 
     const formData = new FormData();
     formData.append('venta_cliente_id', selectCliente.value);
+    formData.append('venta_fecha', inputFecha.value);
     formData.append('productos', JSON.stringify(carrito));
 
     try {
@@ -456,6 +484,12 @@ window.ModificarVenta = async (ventaId) => {
             const detalles = datos.detalles;
 
             selectCliente.value = venta.venta_cliente_id;
+            
+            // Convertir la fecha del servidor al formato datetime-local
+            const fechaVenta = new Date(venta.venta_fecha);
+            const fechaLocal = new Date(fechaVenta.getTime() - fechaVenta.getTimezoneOffset() * 60000);
+            inputFecha.value = fechaLocal.toISOString().slice(0, 16);
+            
             document.getElementById('venta_id').value = venta.venta_id;
 
             const respuestaProductos = await fetch('/apis_juarez/productos/disponibles');
@@ -519,6 +553,16 @@ const ModificarVentaSubmit = async (event) => {
     event.preventDefault();
     BtnModificarVenta.disabled = true;
 
+    if (!inputFecha.value) {
+        Swal.fire({
+            icon: "warning",
+            title: "Fecha requerida",
+            text: "Debe seleccionar una fecha para la venta"
+        });
+        BtnModificarVenta.disabled = false;
+        return;
+    }
+
     if (carrito.length === 0) {
         Swal.fire({
             icon: "warning",
@@ -543,6 +587,7 @@ const ModificarVentaSubmit = async (event) => {
 
     const formData = new FormData();
     formData.append('venta_id', ventaId);
+    formData.append('venta_fecha', inputFecha.value);
     formData.append('productos', JSON.stringify(carrito));
 
     try {
@@ -595,6 +640,7 @@ const ModificarVentaSubmit = async (event) => {
 
 const LimpiarTodo = () => {
     selectCliente.value = '';
+    inputFecha.value = '';
     carrito = [];
     productos = [];
     productosDisponibles.innerHTML = '';
@@ -609,10 +655,13 @@ const LimpiarTodo = () => {
     BtnLimpiarVenta.style.display = 'inline-block';
     
     document.getElementById('venta_id').value = '';
+    
+    establecerFechaActual();
 };
 
 CargarClientes();
 BuscarVentas(); 
+establecerFechaActual(); 
 
 BtnCargarProductos.addEventListener('click', CargarProductos);
 FormVentas.addEventListener('submit', GuardarVenta);

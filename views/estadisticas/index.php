@@ -3,6 +3,8 @@
         <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
             <div class="card-body p-3">
                 <div class="row mb-3">
+                    <h1 class="text-center mb-2">Subteniente de Infanteria</h1>
+                    <h1 class="text-center mb-2">Jose de Jesus Juarez Castellanos</h1>
                     <h5 class="text-center mb-2">¡Sistema de Ventas!</h5>
                     <h4 class="text-center mb-2 text-primary">CARRITO DE COMPRAS</h4>
                 </div>
@@ -99,47 +101,55 @@
     </div>
 </div>
 
-<!-- Nuevo div para el canvas -->
+<!-- Sección de Gráficas - Primera fila con 2 gráficas lado a lado -->
 <div class="row justify-content-center p-3">
-    <div class="col-lg-12">
+    <div class="col-lg-6">
         <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
             <div class="card-body p-3">
-                <h3 class="text-center">GRÁFICO PERSONALIZADO</h3>
+                <h5 class="text-center text-primary">VENTAS POR MES</h5>
                 <div class="text-center">
-                    <canvas id="grafico1" width="400" height="200"></canvas>
+                    <canvas id="grafico1" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
+            <div class="card-body p-3">
+                <h5 class="text-center text-success">PRODUCTOS MÁS VENDIDOS</h5>
+                <div class="text-center">
+                    <canvas id="grafico2" width="400" height="300"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Sección de Gráficas - Segunda fila con 2 gráficas lado a lado -->
 <div class="row justify-content-center p-3">
-    <div class="col-lg-12">
+    <div class="col-lg-6">
         <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
             <div class="card-body p-3">
-                <h3 class="text-center">GRÁFICO PERSONALIZADO</h3>
+                <h5 class="text-center text-warning">CLIENTES CON MÁS COMPRAS</h5>
                 <div class="text-center">
-                    <canvas id="grafico2" width="400" height="200"></canvas>
+                    <canvas id="grafico3" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
+            <div class="card-body p-3">
+                <h5 class="text-center text-info">RESUMEN DE INGRESOS</h5>
+                <div class="text-center">
+                    <canvas id="grafico4" width="400" height="300"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row justify-content-center p-3">
-    <div class="col-lg-12">
-        <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
-            <div class="card-body p-3">
-                <h3 class="text-center">GRÁFICO PERSONALIZADO</h3>
-                <div class="text-center">
-                    <canvas id="grafico3" width="800" height="600"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
+<!-- Tabla de Ventas Realizadas -->
 <div class="row justify-content-center p-3">
     <div class="col-lg-12">
         <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
@@ -155,6 +165,7 @@
     </div>
 </div>
 
+<!-- Modal Detalle de Venta -->
 <div class="modal fade" id="modalDetalleVenta" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

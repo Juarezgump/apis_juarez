@@ -8,7 +8,8 @@ module.exports = {
     'js/usuarios/index' : './src/js/usuarios/index.js',
     'js/productos/index' : './src/js/productos/index.js',
     'js/ventas/index' : './src/js/ventas/index.js',
-    'js/estadisticas/index' : './src/js/estadisticas/index.js'
+    'js/estadisticas/index' : './src/js/estadisticas/index.js',
+    'js/mapas/index' : './src/js/mapas/index.js'
 
   },
   output: {

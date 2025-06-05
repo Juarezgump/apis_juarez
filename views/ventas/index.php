@@ -12,13 +12,17 @@
                         <input type="hidden" id="venta_id" name="venta_id">
 
                         <div class="row mb-4">
-                            <div class="col-lg-6">
+                            <div class="col-lg-4">
                                 <label for="venta_cliente_id" class="form-label">SELECCIONAR CLIENTE</label>
                                 <select class="form-select" id="venta_cliente_id" name="venta_cliente_id">
                                     <option value="">-- SELECCIONE UN CLIENTE --</option>
                                 </select>
                             </div>
-                            <div class="col-lg-6 d-flex align-items-end">
+                            <div class="col-lg-4">
+                                <label for="venta_fecha" class="form-label">FECHA DE VENTA</label>
+                                <input type="datetime-local" class="form-control" id="venta_fecha" name="venta_fecha" required>
+                            </div>
+                            <div class="col-lg-4 d-flex align-items-end">
                                 <button type="button" class="btn btn-info" id="BtnCargarProductos">
                                     <i class="bi bi-cart-plus me-1"></i>Cargar Productos
                                 </button>
