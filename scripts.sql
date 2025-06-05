@@ -15,7 +15,7 @@ CREATE TABLE productos (
     pro_nombre VARCHAR(255),
     pro_precio INT,
     pro_cantidad INT,
-    por_situacion SMALLINT DEFAULT 1
+    pro_situacion SMALLINT DEFAULT 1
 );
 
 CREATE TABLE ventas (

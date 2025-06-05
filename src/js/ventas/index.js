@@ -481,7 +481,6 @@ window.ModificarVenta = async (ventaId) => {
             BtnModificarVenta.style.display = 'inline-block';
             BtnLimpiarVenta.style.display = 'inline-block';
 
-            // Scroll suave y alerta en toast como estaba
             window.scrollTo({
                 top: 0
             });
@@ -555,7 +554,6 @@ const ModificarVentaSubmit = async (event) => {
         const datos = await respuesta.json();
 
         if (datos.codigo == 1) {
-            // SOLO CAMBIO AQUÍ: Agregar botón OK al mensaje de éxito
             await Swal.fire({
                 icon: "success",
                 title: "Éxito",
