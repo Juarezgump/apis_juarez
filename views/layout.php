@@ -36,6 +36,12 @@
                     </a>
                 </li>
 
+                  <li class="nav-item">
+                    <a class="nav-link" href="/apis_juarez/estadisticas">
+                        <i class="bi bi-cart-plus me-2"></i>Estadisticas
+                    </a>
+                </li>
+
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-gear me-2"></i>Gestión
