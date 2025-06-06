@@ -39,13 +39,13 @@
 
                   <li class="nav-item">
                     <a class="nav-link" href="/apis_juarez/estadisticas">
-                        <i class="bi bi-cart-plus me-2"></i>Estadisticas
+                        <i class="bi bi-bar-chart-fill"></i> Estadisticas
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="/apis_juarez/mapas">
-                        <i class="bi bi-cart-plus me-2"></i>Mapas
+                        <i class="bi bi-crosshair"></i> Mapas
                     </a>
                 </li>
 

@@ -106,6 +106,8 @@
     <div class="col-lg-6">
         <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
             <div class="card-body p-3">
+                <h3 class="text-center text-primary">Subteneinte de Infanteria</h3>
+                <h3 class="text-center text-primary">Jose de Jesus Juarez Castellanos</h3>
                 <h5 class="text-center text-primary">VENTAS POR MES</h5>
                 <div class="text-center">
                     <canvas id="grafico1" width="400" height="300"></canvas>
@@ -116,6 +118,8 @@
     <div class="col-lg-6">
         <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
             <div class="card-body p-3">
+                <h3 class="text-center text-primary">Subteneinte de Infanteria</h3>
+                <h3 class="text-center text-primary">Jose de Jesus Juarez Castellanos</h3>
                 <h5 class="text-center text-success">PRODUCTOS MÁS VENDIDOS</h5>
                 <div class="text-center">
                     <canvas id="grafico2" width="400" height="300"></canvas>
@@ -130,9 +134,11 @@
     <div class="col-lg-6">
         <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
             <div class="card-body p-3">
+                <h3 class="text-center text-primary">Subteneinte de Infanteria</h3>
+                <h3 class="text-center text-primary">Jose de Jesus Juarez Castellanos</h3>
                 <h5 class="text-center text-warning">CLIENTES CON MÁS COMPRAS</h5>
                 <div class="text-center">
-                    <canvas id="grafico3" width="400" height="300"></canvas>
+                    <canvas id="grafico3" width="350" height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -140,7 +146,9 @@
     <div class="col-lg-6">
         <div class="card custom-card shadow-lg" style="border-radius: 10px; border: 1px solid #007bff;">
             <div class="card-body p-3">
-                <h5 class="text-center text-info">RESUMEN DE INGRESOS</h5>
+                <h3 class="text-center text-primary">Subteneinte de Infanteria</h3>
+                <h3 class="text-center text-primary">Jose de Jesus Juarez Castellanos</h3>
+                <h5 class="text-center text-info">RESUMEN DE VENTAS MENSUALES</h5>
                 <div class="text-center">
                     <canvas id="grafico4" width="400" height="300"></canvas>
                 </div>
